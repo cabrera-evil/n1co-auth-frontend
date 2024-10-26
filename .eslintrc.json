@@ -1,0 +1,62 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "airbnb-base",
+    "airbnb/hooks",
+    "plugin:@typescript-eslint/recommended",
+    "next/core-web-vitals",
+    "plugin:jsx-a11y/recommended",
+    "plugin:react/recommended",
+    "plugin:prettier/recommended",
+    "prettier"
+  ],
+  "plugins": [
+    "@typescript-eslint/eslint-plugin",
+    "jsx-a11y",
+    "prettier",
+    "react"
+  ],
+  "ignorePatterns": [
+    "*.d.ts",
+    "*env*",
+    "commitlint.config.ts",
+    ".eslintrc.json",
+    ".prettierignore",
+    ".prettierrc",
+    "**/.husky/**",
+    "**/.next/**",
+    "**/components/ui/**",
+    "**/coverage/**",
+    "**/node_modules/**",
+    "**/out/**",
+    "**/public/**",
+    "**/static/**"
+  ],
+  "rules": {
+    // Prettier integration
+    "prettier/prettier": [
+      "error"
+    ],
+    // TypeScript rules
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-require-imports": "off",
+    // React-related rules
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    // Import/export rules
+    "import/no-unresolved": "off",
+    "import/extensions": "off",
+    "import/prefer-default-export": "off",
+    "global-require": "off",
+    "import/no-absolute-path": "off",
+    // Custom JavaScript rules
+    "no-use-before-define": "off",
+    "no-shadow": "off"
+  }
+}
