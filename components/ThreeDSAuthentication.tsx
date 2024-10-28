@@ -1,15 +1,11 @@
 'use client';
 
+import { AuthCompleteParams } from '@/types/auth-complete-params.type';
 import { useEffect } from 'react';
 
 interface ThreeDSAuthenticationProps {
   authUrl: string;
-  onAuthComplete: (params: {
-    status: string;
-    authId: string;
-    orderId: string;
-    amount: number;
-  }) => void;
+  onAuthComplete: (params: AuthCompleteParams) => void;
 }
 
 const ThreeDSAuthentication: React.FC<ThreeDSAuthenticationProps> = ({
@@ -19,25 +15,20 @@ const ThreeDSAuthentication: React.FC<ThreeDSAuthenticationProps> = ({
   useEffect(() => {
     const handleAuthMessage = (event: MessageEvent) => {
       if (event.origin !== 'https://front-3ds.h4b.dev') return;
-
       const { MessageType, Status, AuthenticationId, OrderId, OrderAmount } =
         event.data;
-
       if (
         MessageType === 'authentication.complete' ||
         MessageType === 'authentication.failed'
-      ) {
+      )
         onAuthComplete({
           status: Status,
           authId: AuthenticationId,
           orderId: OrderId,
           amount: OrderAmount,
         });
-      }
     };
-
     window.addEventListener('message', handleAuthMessage);
-
     return () => {
       window.removeEventListener('message', handleAuthMessage);
     };
