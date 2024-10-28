@@ -1,11 +1,10 @@
-'use client';
-
-import { AuthCompleteParams } from '@/types/auth-complete-params.type';
+import { AuthMessage } from '@/types/auth-message.type';
+import { AuthParams } from '@/types/auth-params.type';
 import { useEffect } from 'react';
 
 interface ThreeDSAuthenticationProps {
   authUrl: string;
-  onAuthComplete: (params: AuthCompleteParams) => void;
+  onAuthComplete: (params: AuthParams) => void;
 }
 
 const ThreeDSAuthentication: React.FC<ThreeDSAuthenticationProps> = ({
@@ -14,25 +13,33 @@ const ThreeDSAuthentication: React.FC<ThreeDSAuthenticationProps> = ({
 }) => {
   useEffect(() => {
     const handleAuthMessage = (event: MessageEvent) => {
-      if (event.origin !== 'https://front-3ds.h4b.dev') return;
-      const { MessageType, Status, AuthenticationId, OrderId, OrderAmount } =
-        event.data;
-      if (
-        MessageType === 'authentication.complete' ||
-        MessageType === 'authentication.failed'
-      )
-        onAuthComplete({
-          status: Status,
-          authId: AuthenticationId,
-          orderId: OrderId,
-          amount: OrderAmount,
-        });
+      const trustedOrigin = new URL(authUrl).origin;
+      if (event.origin !== trustedOrigin) return;
+
+      try {
+        const payload: AuthMessage = JSON.parse(event.data);
+        const { MessageType, Status, AuthenticationId, OrderId, OrderAmount } =
+          payload;
+        if (
+          MessageType === 'authentication.complete' ||
+          MessageType === 'authentication.failed'
+        ) {
+          onAuthComplete({
+            status: Status,
+            authId: AuthenticationId,
+            orderId: OrderId,
+            amount: OrderAmount,
+          });
+        }
+      } catch (error) {
+        console.error('Failed to parse message data:', error);
+      }
     };
     window.addEventListener('message', handleAuthMessage);
     return () => {
       window.removeEventListener('message', handleAuthMessage);
     };
-  }, [onAuthComplete]);
+  }, [authUrl, onAuthComplete]);
 
   return (
     <iframe

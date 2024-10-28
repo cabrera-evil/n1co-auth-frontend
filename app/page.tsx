@@ -1,7 +1,7 @@
 'use client';
 
 import ThreeDSAuthentication from '@/components/ThreeDSAuthentication';
-import { AuthCompleteParams } from '@/types/auth-complete-params.type';
+import { AuthParams } from '@/types/auth-params.type';
 import { useState } from 'react';
 
 const PaymentPage: React.FC = () => {
@@ -14,7 +14,7 @@ const PaymentPage: React.FC = () => {
     authId,
     orderId,
     amount,
-  }: AuthCompleteParams) => {
+  }: AuthParams) => {
     setAuthStatus(status);
     setShowAuth(false);
     if (status === 'SUCCESS')
