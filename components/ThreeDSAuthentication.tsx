@@ -15,7 +15,6 @@ const ThreeDSAuthentication: React.FC<ThreeDSAuthenticationProps> = ({
     const handleAuthMessage = (event: MessageEvent) => {
       const trustedOrigin = new URL(authUrl).origin;
       if (event.origin !== trustedOrigin) return;
-
       try {
         const payload: AuthMessage = JSON.parse(event.data);
         const { MessageType, Status, AuthenticationId, OrderId, OrderAmount } =
@@ -47,7 +46,6 @@ const ThreeDSAuthentication: React.FC<ThreeDSAuthenticationProps> = ({
       width="100%"
       height="500px"
       title="3DS Authentication"
-      sandbox="allow-scripts allow-same-origin"
       className="w-full rounded border border-gray-300"
     ></iframe>
   );
