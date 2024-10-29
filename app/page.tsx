@@ -17,7 +17,7 @@ const PaymentPage: React.FC = () => {
     setLoading(true);
   };
 
-  const handleAuthComplete = (payload: AuthMessage) => {
+  const authCallback = (payload: AuthMessage) => {
     setLoading(false);
     setAuth(payload);
     setShowAuth(false);
@@ -108,10 +108,7 @@ const PaymentPage: React.FC = () => {
       )}
       {showAuth && (
         <div className="w-full max-w-lg mt-6 bg-white shadow-lg rounded-lg p-6">
-          <ThreeDSAuthentication
-            authUrl={url}
-            onAuthComplete={handleAuthComplete}
-          />
+          <ThreeDSAuthentication authUrl={url} onAuthComplete={authCallback} />
         </div>
       )}
     </div>
