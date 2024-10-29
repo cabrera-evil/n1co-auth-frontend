@@ -1,7 +1,7 @@
 'use client';
 
 import ThreeDSAuthentication from '@/components/ThreeDSAuthentication';
-import { AuthParams } from '@/types/auth-params.type';
+import { AuthMessage } from '@/types/auth-message.type';
 import { useState } from 'react';
 
 const PaymentPage: React.FC = () => {
@@ -9,24 +9,28 @@ const PaymentPage: React.FC = () => {
   const [authStatus, setAuthStatus] = useState<string | null>(null);
   const [showAuth, setShowAuth] = useState<boolean>(false);
 
-  const handleAuthComplete = ({
-    status,
-    authId,
-    orderId,
-    amount,
-  }: AuthParams) => {
-    setAuthStatus(status);
+  const handleAuthComplete = (payload: AuthMessage) => {
+    setAuthStatus(payload.Status);
     setShowAuth(false);
-    if (status === 'SUCCESS')
-      console.log('Authentication successful, proceed with transaction:', {
-        authId,
-        orderId,
-        amount,
-      });
-    else if (status === 'FAILED')
-      console.log('Authentication failed, please retry.');
-    else if (status === 'ERROR' || status === 'EXPIRED')
-      console.log('Authentication error or expired.');
+    switch (payload.Status) {
+      case 'SUCCESS':
+        console.log(
+          'Authentication successful, proceed with transaction:',
+          payload,
+        );
+        break;
+      case 'FAILED':
+        console.log('Authentication failed, please retry.');
+        break;
+      case 'ERROR':
+        console.log('Authentication error, please retry.');
+        break;
+      case 'EXPIRED':
+        console.log('Authentication expired, please retry.');
+        break;
+      default:
+        console.log('Unknown authentication status:', payload.Status);
+    }
   };
 
   const startAuthentication = () => {
