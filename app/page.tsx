@@ -96,6 +96,11 @@ const PaymentPage: React.FC = () => {
           </button>
         </form>
       </div>
+      {showAuth && (
+        <div className="w-full max-w-lg mt-6 bg-white shadow-lg rounded-lg p-6">
+          <ThreeDSAuthentication authUrl={url} onAuthComplete={authCallback} />
+        </div>
+      )}
       {auth && (
         <div className="w-full max-w-lg mt-8 p-6 bg-white shadow-lg rounded-lg">
           <p className="text-lg font-medium">Authentication response:</p>
@@ -104,11 +109,6 @@ const PaymentPage: React.FC = () => {
           >
             {JSON.stringify(auth, null, 2)}
           </pre>
-        </div>
-      )}
-      {showAuth && (
-        <div className="w-full max-w-lg mt-6 bg-white shadow-lg rounded-lg p-6">
-          <ThreeDSAuthentication authUrl={url} onAuthComplete={authCallback} />
         </div>
       )}
     </div>
