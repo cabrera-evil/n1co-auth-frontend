@@ -11,7 +11,7 @@ on:
 jobs:
   notify:
     name: Notify
-    uses: DigitalDreamsInc/workflows/.github/workflows/notify-pr-discord.yaml@master
+    uses: cabrera-evil/workflows/.github/workflows/notify-pr-discord.yaml@master
     with:
-      DISCORD_WEBHOOK_REF: op://digital-dreams/Discord/webhook
+      DISCORD_WEBHOOK_REF: op://actions/Discord/webhook
     secrets: inherit

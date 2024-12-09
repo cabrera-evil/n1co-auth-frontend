@@ -29,7 +29,7 @@ jobs:
   deploy:
     name: Deploy
     needs: [set_stage]
-    uses: DigitalDreamsInc/workflows/.github/workflows/deploy-vercel.yaml@master
+    uses: cabrera-evil/workflows/.github/workflows/deploy-vercel.yaml@master
     with:
       STAGE: ${{ needs.set_stage.outputs.stage }}
       VERCEL_TOKEN_REF: op://Vercel/cabrera-evil/token
@@ -41,7 +41,7 @@ jobs:
     name: Notify
     needs: deploy
     if: always()
-    uses: DigitalDreamsInc/workflows/.github/workflows/notify-status-discord.yaml@master
+    uses: cabrera-evil/workflows/.github/workflows/notify-status-discord.yaml@master
     with:
-      DISCORD_WEBHOOK_REF: op://digital-dreams/Discord/credential
+      DISCORD_WEBHOOK_REF: op://actions/Discord/webhook
     secrets: inherit
