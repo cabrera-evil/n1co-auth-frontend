@@ -5,8 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/admin/', '/api/'],
+      disallow: ['*/admin/*', '*/api/*'],
     },
-    sitemap: 'https://nextjs.org/sitemap.xml',
+    sitemap: 'https://n1co-auth-frontend.vercel.app/sitemap.xml',
   };
 }

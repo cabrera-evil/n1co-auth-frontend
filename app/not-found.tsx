@@ -1,19 +1,23 @@
 import Link from 'next/link';
 
-export default function NotFound() {
+export default function Component() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-600 to-teal-500">
-      <div className="text-center px-8 py-12 bg-white rounded-xl shadow-xl max-w-md">
-        <h1 className="text-5xl font-extrabold text-gray-800 mb-4">404</h1>
-        <p className="text-2xl text-gray-600 mb-4">Oops! Page not found.</p>
-        <p className="text-gray-500 mb-6">
-          The page you are looking for does not exist or might have been moved.
-        </p>
+    <div className="flex items-center min-h-screen px-4 py-12 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+      <div className="w-full space-y-6 text-center">
+        <div className="space-y-3">
+          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl transition-transform hover:scale-110">
+            404
+          </h1>
+          <p className="text-gray-500">
+            Looks like you&apos;ve ventured into the unknown digital realm.
+          </p>
+        </div>
         <Link
           href="/"
-          className="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition-all duration-300"
+          className="inline-flex h-10 items-center rounded-md bg-gray-900 px-8 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
+          prefetch={false}
         >
-          Go Home
+          Return to website
         </Link>
       </div>
     </div>

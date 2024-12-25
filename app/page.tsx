@@ -1,24 +1,47 @@
 'use client';
 
 import ThreeDSAuthentication from '@/components/ThreeDSAuthentication';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { AuthMessage } from '@/types/auth-message.type';
-import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+
+const formSchema = z.object({
+  url: z
+    .string()
+    .url('Please enter a valid URL')
+    .nonempty('The URL is required'),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 const PaymentPage: React.FC = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [url, setUrl] = useState<string>('');
-  const [auth, setAuth] = useState<AuthMessage>();
+  const [auth, setAuth] = useState<AuthMessage | null>(null);
   const [showAuth, setShowAuth] = useState<boolean>(false);
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!url) return;
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      url: '',
+    },
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const onSubmit = (data: FormValues) => {
     setShowAuth(true);
-    setLoading(true);
   };
 
   const authCallback = (payload: AuthMessage) => {
-    setLoading(false);
     setAuth(payload);
     setShowAuth(false);
   };
@@ -42,70 +65,95 @@ const PaymentPage: React.FC = () => {
         3DS Authentication
       </h1>
       <div className="w-full max-w-lg bg-white shadow-lg rounded-lg p-6">
-        <form onSubmit={onSubmit}>
-          <label
-            htmlFor="auth-url"
-            className="block text-gray-600 text-sm font-semibold mb-2"
-          >
-            Enter 3DS Authentication URL
-          </label>
-          <input
-            id="auth-url"
-            type="text"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="https://front-3ds.h4b.dev/authentication/..."
-          />
-          <button
-            type="submit"
-            disabled={loading || !url}
-            className={`w-full py-3 mt-4 rounded font-semibold transition-colors ${
-              loading
-                ? 'bg-blue-300 cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
-            }`}
-          >
-            {loading ? (
-              <span className="flex justify-center items-center text-white">
-                <svg
-                  className="animate-spin h-5 w-5 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  ></path>
-                </svg>
-                Starting Authentication...
-              </span>
-            ) : (
-              'Start Authentication'
-            )}
-          </button>
-        </form>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="url"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel
+                    htmlFor="auth-url"
+                    className="block text-gray-600 text-sm font-semibold mb-2"
+                  >
+                    Enter 3DS Authentication URL
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      id="auth-url"
+                      placeholder="https://front-3ds.h4b.dev/authentication/..."
+                      {...field}
+                      className={`w-full p-3 border ${
+                        fieldState.error ? 'border-red-500' : 'border-gray-300'
+                      } rounded focus:outline-none focus:ring-2 ${
+                        fieldState.error
+                          ? 'focus:ring-red-500'
+                          : 'focus:ring-blue-500'
+                      }`}
+                    />
+                  </FormControl>
+                  {fieldState.error && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </FormItem>
+              )}
+            />
+            <Button
+              type="submit"
+              disabled={form.formState.isSubmitting}
+              className={`w-full py-3 mt-4 rounded font-semibold transition-colors ${
+                form.formState.isSubmitting ? 'cursor-not-allowed' : ''
+              }`}
+            >
+              {form.formState.isSubmitting ? (
+                <span className="flex justify-center items-center text-white">
+                  <svg
+                    className="animate-spin h-5 w-5 mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    ></path>
+                  </svg>
+                  Starting Authentication...
+                </span>
+              ) : (
+                'Start Authentication'
+              )}
+            </Button>
+          </form>
+        </Form>
       </div>
       {showAuth && (
         <div className="w-full max-w-lg mt-6 bg-white shadow-lg rounded-lg p-6">
-          <ThreeDSAuthentication authUrl={url} onAuthComplete={authCallback} />
+          <ThreeDSAuthentication
+            authUrl={form.getValues('url')}
+            onAuthComplete={authCallback}
+          />
         </div>
       )}
       {auth && (
         <div className="w-full max-w-lg mt-8 p-6 bg-white shadow-lg rounded-lg">
           <p className="text-lg font-medium">Authentication response:</p>
           <pre
-            className={`mt-2 p-3 rounded-lg font-mono text-sm break-words whitespace-pre-wrap ${getStatusColor(auth.Status)}`}
+            className={`mt-2 p-3 rounded-lg font-mono text-sm break-words whitespace-pre-wrap ${getStatusColor(
+              auth.Status,
+            )}`}
           >
             {JSON.stringify(auth, null, 2)}
           </pre>

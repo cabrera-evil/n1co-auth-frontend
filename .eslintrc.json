@@ -32,6 +32,7 @@
     "**/.husky/**",
     "**/.next/**",
     "**/components/ui/**",
+    "hooks/use-toast.ts",
     "**/coverage/**",
     "**/node_modules/**",
     "**/out/**",
